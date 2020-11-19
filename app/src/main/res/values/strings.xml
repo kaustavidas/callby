@@ -23,5 +23,6 @@
     <string name="hashTag">#</string>
     <string name="hint">Enter the Number</string>
     <string name="x">X</string>
+    <string name="dial">Dial</string>
 
 </resources>
