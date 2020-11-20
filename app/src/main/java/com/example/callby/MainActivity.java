@@ -1,8 +1,15 @@
 package com.example.callby;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -13,6 +20,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final int REQUEST_CALL = 1;
+
+    
 
     Button btnOne;
     Button btnTwo;
@@ -62,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
         btnHashTag = findViewById(R.id.buttonHashTag);
         btnDial = findViewById(R.id.buttonDial);
         btnOnDelete = findViewById(R.id.buttonDelete);
-
         input = findViewById(R.id.editTextTextPersonName);
 
     }
@@ -141,12 +151,36 @@ public class MainActivity extends AppCompatActivity {
         input.setText("");
     }
 
-    public void call(View v){
+    public void makeCall(View v){
         if(input.getText().length() <= 3) {
             Toast.makeText(this, "Please Enter A Valid Phone Number", Toast.LENGTH_SHORT).show();
         } else {
-
+            makePhoneCall();
         }
+    }
+
+    private void makePhoneCall(){
+        if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[] {
+                            Manifest.permission.CALL_PHONE
+                    }, REQUEST_CALL);
+        } else {
+            String dial = "tel:" + input;
+            startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(dial)));
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    if(requestCode == REQUEST_CALL) {
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            makePhoneCall();
+        }else{
+            Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
+        }
+    }
     }
 
     public void onButtonClick(Button button, EditText inputNumber, String number){
@@ -154,5 +188,6 @@ public class MainActivity extends AppCompatActivity {
         inputNumber.setText(cache + number);
 
     }
+
 
 }
