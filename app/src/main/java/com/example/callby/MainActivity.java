@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
                             Manifest.permission.CALL_PHONE
                     }, REQUEST_CALL);
         } else {
-            String dial = "tel:" + input;
+            String dial = "tel:" + input.getText().toString();
             startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(dial)));
         }
     }
